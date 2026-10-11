@@ -1,0 +1,78 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Bupa Australia Coding Test";
+
+    var adultsTitle = Model.HardcoverOnly
+       ? "Hardcover Books owned by Adults"
+       : "Books owned by Adults";
+
+    var childrenTitle = Model.HardcoverOnly
+        ? "Hardcover Books owned by Children"
+        : "Books owned by Children";
+}
+
+<section class="owners-books-shell" aria-label="Owners and books">
+    <header class="owners-books-header">
+        <h1>Owners and Books</h1>
+    </header>
+
+    <div class="owners-books-body">
+        @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+        {
+            <div class="owners-books-error" role="alert">@Model.ErrorMessage</div>
+        }
+
+        @if (Model.GetBooks && string.IsNullOrWhiteSpace(Model.ErrorMessage))
+        {
+            <div class="book-groups">
+                <section class="book-group-card" aria-label="Books owned by adults">
+                    <h2>@adultsTitle</h2>
+                    @if (Model.AdultBooks.Count == 0)
+                    {
+                        <p class="book-group-empty">No books found.</p>
+                    }
+                    else
+                    {
+                        <ul>
+                            @foreach (var book in Model.AdultBooks)
+                            {
+                                <li>@book.Name</li>
+                            }
+                        </ul>
+                    }
+                </section>
+
+                <section class="book-group-card" aria-label="Books owned by children">
+                    <h2>@childrenTitle</h2>
+                    @if (Model.ChildrenBooks.Count == 0)
+                    {
+                        <p class="book-group-empty">No books found.</p>
+                    }
+                    else
+                    {
+                        <ul>
+                            @foreach (var book in Model.ChildrenBooks)
+                            {
+                                <li>@book.Name</li>
+                            }
+                        </ul>
+                    }
+                </section>
+            </div>
+        }
+
+        <div class="owners-books-actions">
+            <a class="hardcover-link"
+               asp-page="/Home/Index"
+               asp-route-getBooks="true"
+               asp-route-hardcoverOnly="true">Hardcover only</a>
+
+            <form asp-page="/Home/Index" method="get" class="get-books-form">
+                <input type="hidden" name="getBooks" value="true" />
+                <input type="hidden" name="hardcoverOnly" value="false" />
+                <button type="submit" class="get-books-button">Get Books</button>
+            </form>
+        </div>
+    </div>
+</section>
